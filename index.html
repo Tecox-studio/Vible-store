@@ -671,7 +671,7 @@
 
                                 <!-- Banners Setup -->
                                 <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-purple-500"></i> Banners (Max 7)</h3>
+                                    <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-purple-500"></i> Banners (Max 5)</h3>
                                     <div class="flex gap-2 mb-4 overflow-x-auto py-2">
                                         ${banners.map((b, i) => `
                                             <div class="relative flex-shrink-0 w-24 h-16 rounded overflow-hidden group border border-gray-200">
@@ -685,8 +685,8 @@
                                     </div>
                                     <div class="flex flex-col gap-2">
                                         <div class="flex items-center gap-2">
-                                            <input type="file" id="banner-upload" accept="image/*" ${banners.length >= 7 ? 'disabled' : ''} class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer disabled:opacity-50 w-full">
-                                            <button id="banner-save-btn" onclick="uploadBanner()" ${banners.length >= 7 ? 'disabled' : ''} class="bg-purple-500 text-white px-4 py-2 rounded text-sm hover:bg-purple-600 transition disabled:opacity-50 whitespace-nowrap flex items-center gap-1">Add Banner</button>
+                                            <input type="file" id="banner-upload" accept="image/*" ${banners.length >= 5 ? 'disabled' : ''} class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer disabled:opacity-50 w-full">
+                                            <button id="banner-save-btn" onclick="uploadBanner()" ${banners.length >= 5 ? 'disabled' : ''} class="bg-purple-500 text-white px-4 py-2 rounded text-sm hover:bg-purple-600 transition disabled:opacity-50 whitespace-nowrap flex items-center gap-1">Add Banner</button>
                                         </div>
                                         <p id="banner-msg" class="text-sm text-center font-medium"></p>
                                     </div>
@@ -778,21 +778,19 @@
         /* ================= UTILS & FIREBASE ACTIONS ================= */
         
         // Image Compression function
-        function compressImage(file, callback) {
+        function compressImage(file, callback, maxWidth = 800, maxHeight = 800, quality = 0.7) {
             const reader = new FileReader();
             reader.onload = function(e) {
                 const img = new Image();
                 img.onload = function() {
                     const canvas = document.createElement('canvas');
-                    const MAX_WIDTH = 800;
-                    const MAX_HEIGHT = 800;
                     let width = img.width;
                     let height = img.height;
 
                     if (width > height) {
-                        if (width > MAX_WIDTH) { height *= MAX_WIDTH / width; width = MAX_WIDTH; }
+                        if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
                     } else {
-                        if (height > MAX_HEIGHT) { width *= MAX_HEIGHT / height; height = MAX_HEIGHT; }
+                        if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
                     }
                     
                     canvas.width = width;
@@ -800,7 +798,7 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                    const dataUrl = canvas.toDataURL('image/jpeg', quality);
                     callback(dataUrl);
                 };
                 img.src = e.target.result;
@@ -848,7 +846,7 @@
                         msg.className = "text-sm text-center font-medium mt-2 text-red-500";
                     }
                     setTimeout(() => msg.textContent = '', 4000);
-                });
+                }, 800, 800, 0.9); // Better logo quality
             }
         };
 
@@ -857,7 +855,7 @@
             const btn = document.getElementById('banner-save-btn');
             const msg = document.getElementById('banner-msg');
 
-            if (fileInput.files.length > 0 && banners.length < 7) {
+            if (fileInput.files.length > 0 && banners.length < 5) {
                 btn.disabled = true;
                 btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...';
                 lucide.createIcons();
@@ -878,7 +876,7 @@
                         msg.className = "text-sm text-center font-medium mt-2 text-red-500";
                     }
                     setTimeout(() => msg.textContent = '', 4000);
-                });
+                }, 1400, 800, 0.85); // High resolution and quality for banners
             }
         };
 
@@ -942,7 +940,7 @@
                     btn.innerHTML = '<i data-lucide="upload" class="w-4 h-4"></i> Save Product';
                     lucide.createIcons();
                 }
-            });
+            }, 800, 800, 0.8); // Slightly better product image quality
         };
 
         window.deleteProduct = async function(id) {
