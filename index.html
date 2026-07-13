@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vible Store</title>
+    <!-- গুগল সার্চ কনসোল থেকে কপি করা HTML Tag-টি এখানে পেস্ট করবেন -->
     <meta name="google-site-verification" content="ARHKIEvzEj_A-SLU7gn8WgRt1XfHTAFiWcEtDvI8ucA" />
+    <title>Vible Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
@@ -455,6 +456,29 @@
             if(menu) menu.classList.toggle('hidden');
         };
 
+        // Mobile Account Menu Toggle
+        window.toggleMobileAccountMenu = function(show) {
+            const menu = document.getElementById('mobile-account-menu');
+            const sheet = document.getElementById('mobile-account-sheet');
+            if (!menu || !sheet) return;
+            
+            if (show) {
+                menu.classList.remove('hidden');
+                menu.classList.add('flex');
+                setTimeout(() => {
+                    menu.classList.remove('opacity-0');
+                    sheet.classList.remove('translate-y-full');
+                }, 10);
+            } else {
+                menu.classList.add('opacity-0');
+                sheet.classList.add('translate-y-full');
+                setTimeout(() => {
+                    menu.classList.add('hidden');
+                    menu.classList.remove('flex');
+                }, 300);
+            }
+        };
+
         window.toggleSidebar = function(show) {
             const sidebar = document.getElementById('mobile-sidebar');
             if (show) {
@@ -528,7 +552,7 @@
             const defaultLogo = `<div class="flex items-center text-2xl font-bold text-white"><span class="text-orange-500">V</span>S <span class="ml-1 font-semibold">VIBLE <span class="text-orange-500 text-sm align-top">STORE</span></span></div>`;
             const logoHTML = storeLogo ? `<img src="${storeLogo}" alt="Logo" class="h-10">` : defaultLogo;
 
-            // Photography Category Fallbacks exactly matching ChatGPT Image Jul 13, 2026, 12_53_45 PM.png
+            // Photography Category Fallbacks
             const categoryImagesFallback = {
                 "Electronics": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80",
                 "Fashion": "https://images.unsplash.com/photo-1479064555552-3ef4979f8908?w=200&q=80",
@@ -571,6 +595,9 @@
                                     <div class="px-4 py-2 border-b border-gray-100 mb-1">
                                         <p class="text-sm text-gray-900 font-semibold truncate">${userName}</p>
                                     </div>
+                                    <button onclick="window.showToast('Item added to Wishlist!', 'success')" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-medium transition">
+                                        <i data-lucide="heart" class="w-4 h-4 inline mr-2 align-text-bottom text-gray-400"></i> Wishlist
+                                    </button>
                                     <button onclick="logoutStoreUser()" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-50 font-medium transition">
                                         <i data-lucide="log-out" class="w-4 h-4 inline mr-2 align-text-bottom"></i> Sign out
                                     </button>
@@ -584,7 +611,7 @@
                         </div>
                     </div>
 
-                    <!-- Mobile Search Bar (Directly below header as shown in screenshot) -->
+                    <!-- Mobile Search Bar -->
                     <div class="md:hidden px-4 pb-3 pt-1">
                         <div class="flex items-center bg-white rounded overflow-hidden">
                             <input type="text" id="store-search-mobile" placeholder="Search for products..." value="${searchQuery}"
@@ -619,27 +646,26 @@
                                     </div>
                                 `).join('') : `
                                     <div class="banner-slide active">
-                                        <!-- Your Specified Default Banner URL with perfect layout rendering -->
                                         <img src="https://github.com/Tecox-studio/Vible-store/blob/main/ChatGPT%20Image%20Jul%2012,%202026,%2009_11_25%20PM.png?raw=true" class="w-full h-full object-cover" alt="Banner Default">
                                     </div>
                                 `}
                             </div>
                         </div>
 
-                        <!-- Category Tiles Layout (Matching Screen 2 of ChatGPT Image Jul 13, 2026, 12_53_45 PM.png) -->
-                        <div class="container mx-auto px-4 mt-8">
-                            <div class="flex justify-between items-center mb-4">
-                                <h3 class="text-lg font-bold text-gray-800">Shop by Category</h3>
+                        <!-- Category Tiles Layout -->
+                        <div class="container mx-auto px-4 mt-6">
+                            <div class="flex justify-between items-center mb-3">
+                                <h3 class="text-sm md:text-base font-bold text-gray-800">Shop by Category</h3>
                             </div>
-                            <div class="grid grid-cols-5 gap-3 md:grid-cols-6 lg:grid-cols-8">
+                            <div class="grid grid-cols-4 gap-2 sm:gap-3 md:grid-cols-6 lg:grid-cols-8">
                                 ${categories.map(cat => `
                                     <div onclick="window.setCategory('${cat}')" class="flex flex-col items-center cursor-pointer group">
-                                        <div class="w-full aspect-square rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm relative transition transform group-hover:scale-105">
+                                        <div class="w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full overflow-hidden bg-white border border-gray-200 shadow-sm relative transition transform group-hover:scale-105 flex items-center justify-center">
                                             <img src="${categoryImages[cat] || categoryImagesFallback[cat] || 'https://placehold.co/150x150/f3f4f6/374151?text=' + cat}" 
                                                  alt="${cat}" 
                                                  class="w-full h-full object-cover">
                                         </div>
-                                        <span class="text-xs font-semibold text-gray-700 text-center mt-2 truncate w-full px-1">${cat}</span>
+                                        <span class="text-[10px] sm:text-xs font-semibold text-gray-600 text-center mt-1.5 truncate w-full px-1">${cat}</span>
                                     </div>
                                 `).join('')}
                             </div>
@@ -695,8 +721,8 @@
                     </div>
                 </main>
                 
-                <!-- Bottom Sticky Navigation Bar for Mobile (Matching ChatGPT Image Jul 13, 2026, 12_53_45 PM.png) -->
-                <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center md:hidden z-40 shadow-xl">
+                <!-- Bottom Sticky Navigation Bar for Mobile -->
+                <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center md:hidden z-40 shadow-[0_-2px_10px_rgba(0,0,0,0.05)]">
                     <button onclick="window.setCategory('All')" class="flex flex-col items-center justify-center text-gray-500 focus:outline-none hover:text-orange-500 ${activeCategory === 'All' ? 'text-orange-500 font-bold' : ''}">
                         <i data-lucide="home" class="w-5 h-5"></i>
                         <span class="text-[10px] mt-0.5">Home</span>
@@ -709,10 +735,48 @@
                         <i data-lucide="percent" class="w-5 h-5"></i>
                         <span class="text-[10px] mt-0.5">Deals</span>
                     </button>
-                    <button onclick="window.location.hash = '#vible-admin'" class="flex flex-col items-center justify-center text-gray-500 focus:outline-none hover:text-orange-500">
+                    <!-- Updated: Now calls toggleMobileAccountMenu(true) instead of Admin Panel -->
+                    <button onclick="window.toggleMobileAccountMenu(true)" class="flex flex-col items-center justify-center text-gray-500 focus:outline-none hover:text-orange-500">
                         <i data-lucide="user" class="w-5 h-5"></i>
                         <span class="text-[10px] mt-0.5">Account</span>
                     </button>
+                </div>
+
+                <!-- Mobile Account Bottom Sheet Menu -->
+                <div id="mobile-account-menu" class="fixed inset-0 bg-black bg-opacity-50 z-[60] hidden flex-col justify-end transition-opacity duration-300 opacity-0" onclick="if(event.target === this) toggleMobileAccountMenu(false)">
+                    <div class="bg-white rounded-t-3xl w-full p-6 transform translate-y-full transition-transform duration-300 shadow-2xl" id="mobile-account-sheet">
+                        <div class="flex justify-between items-center mb-4 pb-4 border-b border-gray-100">
+                            <h3 class="font-bold text-lg text-gray-900">My Account</h3>
+                            <button onclick="toggleMobileAccountMenu(false)" class="text-gray-400 hover:text-gray-600 bg-gray-50 p-2 rounded-full"><i data-lucide="x" class="w-5 h-5"></i></button>
+                        </div>
+                        
+                        <!-- User Info -->
+                        <div class="flex items-center gap-4 mb-6 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                            <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center text-orange-500 font-bold text-xl shrink-0">
+                                ${userName.charAt(0).toUpperCase()}
+                            </div>
+                            <div class="truncate">
+                                <p class="font-bold text-gray-800 truncate">${userName}</p>
+                                <p class="text-xs text-gray-500">Welcome to Vible Store</p>
+                            </div>
+                        </div>
+                        
+                        <!-- Actions -->
+                        <div class="space-y-2">
+                            <button onclick="window.showToast('My Orders functionality coming soon!', 'success'); toggleMobileAccountMenu(false);" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl text-gray-700 font-medium transition">
+                                <i data-lucide="package" class="w-5 h-5 text-gray-400"></i> My Orders
+                            </button>
+                            <button onclick="window.showToast('Item added to Wishlist!', 'success'); toggleMobileAccountMenu(false);" class="w-full flex items-center gap-3 p-3 hover:bg-gray-50 rounded-xl text-gray-700 font-medium transition">
+                                <i data-lucide="heart" class="w-5 h-5 text-gray-400"></i> My Wishlist
+                            </button>
+
+                            <div class="border-t border-gray-100 my-2 pt-2"></div>
+                            
+                            <button onclick="logoutStoreUser(); toggleMobileAccountMenu(false);" class="w-full flex items-center gap-3 p-3 hover:bg-red-50 rounded-xl text-red-600 font-medium transition">
+                                <i data-lucide="log-out" class="w-5 h-5 text-red-500"></i> Logout
+                            </button>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Footer -->
@@ -968,7 +1032,6 @@
         }
 
         /* ================= UTILS & FIREBASE ACTIONS ================= */
-        // Premium Base64 Image Compression (Supports PNG Transparency)
         function compressImage(file, maxDimension, quality, callback) {
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -995,7 +1058,6 @@
                     const ctx = canvas.getContext('2d');
                     ctx.drawImage(img, 0, 0, width, height);
                     
-                    // Maintain transparency for PNG files, otherwise use JPEG compression
                     const mimeType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
                     const dataUrl = canvas.toDataURL(mimeType, mimeType === 'image/png' ? undefined : quality);
                     callback(dataUrl);
@@ -1005,7 +1067,6 @@
             reader.readAsDataURL(file);
         }
 
-        // Save Logo Settings to Firebase
         async function saveSettings(newLogo) {
             if(!currentUser) return false;
             try {
@@ -1023,7 +1084,6 @@
         window.uploadLogo = function() {
             const fileInput = document.getElementById('logo-upload');
             const btn = document.getElementById('logo-save-btn');
-            const msg = document.getElementById('logo-msg');
 
             if (fileInput.files.length > 0) {
                 btn.disabled = true;
@@ -1031,7 +1091,6 @@
                 lucide.createIcons();
 
                 const file = fileInput.files[0];
-                // Max 400px with 0.9 quality for beautiful transparent Logo
                 compressImage(file, 400, 0.9, async (base64) => {
                     const success = await saveSettings(base64);
                     btn.disabled = false;
@@ -1049,7 +1108,6 @@
         window.uploadBanner = function() {
             const fileInput = document.getElementById('banner-upload');
             const btn = document.getElementById('banner-save-btn');
-            const msg = document.getElementById('banner-msg');
 
             if (fileInput.files.length > 0 && banners.length < 5) {
                 btn.disabled = true;
@@ -1057,7 +1115,6 @@
                 lucide.createIcons();
 
                 const file = fileInput.files[0];
-                // Premium 1400px High-Res Banner Compression (No blurriness!)
                 compressImage(file, 1400, 0.85, async (base64) => {
                     try {
                         const bannersRef = collection(db, 'artifacts', appId, 'public', 'data', 'banners');
@@ -1092,7 +1149,6 @@
             const catSelect = document.getElementById('cat-select').value;
             const fileInput = document.getElementById('cat-image-upload');
             const btn = document.getElementById('cat-save-btn');
-            const msg = document.getElementById('cat-msg');
 
             if (fileInput.files.length > 0) {
                 btn.disabled = true;
@@ -1100,7 +1156,6 @@
                 lucide.createIcons();
 
                 const file = fileInput.files[0];
-                // Crisp 300px icon compression
                 compressImage(file, 300, 0.85, async (base64) => {
                     try {
                         const catDocRef = doc(db, 'artifacts', appId, 'public', 'data', 'categories', catSelect);
@@ -1135,7 +1190,6 @@
             const link = document.getElementById('p-link').value.trim();
             const category = document.getElementById('p-category').value;
             const fileInput = document.getElementById('p-image');
-            const msgEl = document.getElementById('add-p-msg');
             const btn = document.getElementById('add-product-btn');
 
             if (!title || !price || !link || fileInput.files.length === 0) {
@@ -1147,7 +1201,6 @@
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...';
             lucide.createIcons();
 
-            // High-Res 800px product image compression
             compressImage(fileInput.files[0], 800, 0.85, async (base64Image) => {
                 try {
                     let discount = 0;
@@ -1198,3 +1251,4 @@
     </script>
 </body>
 </html>
+```
