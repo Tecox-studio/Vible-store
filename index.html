@@ -25,19 +25,28 @@
             z-index: 1;
         }
         
+        /* Custom premium animations */
+        .animate-fade-in {
+            animation: fadeIn 0.3s ease-in-out forwards;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Hide scrollbar for category list */
         .no-scrollbar::-webkit-scrollbar { display: none; }
         .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
         /* Modal Styles */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 50; align-items: center; justify-content: center; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 100; align-items: center; justify-content: center; }
         .modal.active { display: flex; }
 
         /* Text truncation */
         .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
     </style>
 </head>
-<body>
+<body class="bg-gray-50 pb-20 md:pb-0">
 
     <div id="app-container">
         <!-- Modern Skeleton Loader (Visible until data loads) -->
@@ -45,47 +54,39 @@
             <!-- Header Skeleton -->
             <header class="bg-[#0f1111] w-full">
                 <div class="container mx-auto px-4 py-3 flex items-center gap-4">
+                    <div class="h-8 w-8 bg-gray-700 rounded-full md:hidden"></div>
                     <div class="h-8 w-24 bg-gray-700 rounded"></div>
                     <div class="flex-grow h-10 bg-gray-700 rounded hidden md:block"></div>
                     <div class="w-16 h-8 bg-gray-700 rounded ml-auto"></div>
-                    <div class="w-10 h-8 bg-gray-700 rounded"></div>
-                </div>
-                <div class="bg-[#232f3e] py-3 px-4">
-                    <div class="container mx-auto flex gap-6 overflow-hidden">
-                        <div class="h-4 w-16 bg-gray-600 rounded shrink-0"></div>
-                        <div class="h-4 w-20 bg-gray-600 rounded shrink-0"></div>
-                        <div class="h-4 w-24 bg-gray-600 rounded shrink-0"></div>
-                        <div class="h-4 w-16 bg-gray-600 rounded shrink-0"></div>
-                    </div>
                 </div>
             </header>
             
             <main class="pb-16">
                 <!-- Hero Banner Skeleton -->
-                <div class="w-full h-[300px] md:h-[400px] bg-gray-200 mb-8"></div>
+                <div class="container mx-auto px-4 mt-4">
+                    <div class="w-full h-[220px] md:h-[400px] bg-gray-200 rounded-2xl mb-8"></div>
+                </div>
                 
                 <!-- Category Circles Skeleton -->
                 <div class="container mx-auto px-4 mb-8 flex gap-4 overflow-hidden">
-                    <div class="w-[100px] h-[100px] bg-gray-200 rounded-lg shrink-0"></div>
-                    <div class="w-[100px] h-[100px] bg-gray-200 rounded-lg shrink-0"></div>
-                    <div class="w-[100px] h-[100px] bg-gray-200 rounded-lg shrink-0"></div>
-                    <div class="w-[100px] h-[100px] bg-gray-200 rounded-lg shrink-0"></div>
+                    <div class="w-[80px] h-[80px] bg-gray-200 rounded-full shrink-0"></div>
+                    <div class="w-[80px] h-[80px] bg-gray-200 rounded-full shrink-0"></div>
+                    <div class="w-[80px] h-[80px] bg-gray-200 rounded-full shrink-0"></div>
+                    <div class="w-[80px] h-[80px] bg-gray-200 rounded-full shrink-0"></div>
                 </div>
 
                 <!-- Products Grid Skeleton -->
                 <div class="container mx-auto px-4">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                             <div class="w-full pt-[100%] bg-gray-100 rounded mb-4"></div>
                             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                             <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                            <div class="h-8 bg-gray-200 rounded w-full"></div>
                         </div>
-                        <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100 hidden sm:block">
+                        <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
                             <div class="w-full pt-[100%] bg-gray-100 rounded mb-4"></div>
                             <div class="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
                             <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-                            <div class="h-8 bg-gray-200 rounded w-full"></div>
                         </div>
                     </div>
                 </div>
@@ -95,14 +96,14 @@
 
     <!-- Login Modal (Google, Email, Phone) -->
     <div id="login-modal" class="modal">
-        <div class="bg-white rounded-lg w-full max-w-md mx-4 shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
-            <div class="p-6 text-center border-b border-gray-100">
+        <div class="bg-white rounded-2xl w-full max-w-md mx-4 shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in">
+            <div class="p-6 text-center border-b border-gray-100 bg-gray-50">
                 <h2 class="text-2xl font-bold text-gray-800">Welcome to Vible Store</h2>
                 <p class="text-gray-500 text-sm mt-1">Please log in to continue</p>
             </div>
             
             <!-- Auth Tabs -->
-            <div class="flex border-b border-gray-200">
+            <div class="flex border-b border-gray-200 bg-gray-50">
                 <button onclick="switchTab('google')" id="tab-google" class="flex-1 py-3 text-sm font-semibold text-orange-500 border-b-2 border-orange-500 transition">Google</button>
                 <button onclick="switchTab('email')" id="tab-email" class="flex-1 py-3 text-sm font-semibold text-gray-500 transition">Email</button>
                 <button onclick="switchTab('phone')" id="tab-phone" class="flex-1 py-3 text-sm font-semibold text-gray-500 transition">Phone</button>
@@ -111,31 +112,31 @@
             <div class="p-6 overflow-y-auto">
                 <!-- Google Tab -->
                 <div id="panel-google" class="block text-center space-y-4">
-                    <button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 px-4 rounded transition shadow-sm">
+                    <button onclick="handleGoogleLogin()" class="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 font-medium py-3 px-4 rounded-xl transition shadow-sm">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-5 h-5" alt="Google"> Sign in with Google
                     </button>
                 </div>
                 
                 <!-- Email Tab -->
                 <div id="panel-email" class="hidden space-y-4">
-                    <input type="email" id="email-input" placeholder="Email address" class="w-full border rounded px-4 py-2 focus:outline-none focus:border-orange-500">
-                    <input type="password" id="password-input" placeholder="Password" class="w-full border rounded px-4 py-2 focus:outline-none focus:border-orange-500">
+                    <input type="email" id="email-input" placeholder="Email address" class="w-full border rounded-xl px-4 py-2 focus:outline-none focus:border-orange-500">
+                    <input type="password" id="password-input" placeholder="Password" class="w-full border rounded-xl px-4 py-2 focus:outline-none focus:border-orange-500">
                     <div class="flex gap-2">
-                        <button onclick="handleEmailLogin()" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded transition">Login</button>
-                        <button onclick="handleEmailSignup()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-bold py-2 rounded transition">Sign Up</button>
+                        <button onclick="handleEmailLogin()" class="flex-1 bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl transition">Login</button>
+                        <button onclick="handleEmailSignup()" class="flex-1 bg-gray-800 hover:bg-gray-900 text-white font-bold py-2.5 rounded-xl transition">Sign Up</button>
                     </div>
                 </div>
                 
                 <!-- Phone Tab -->
                 <div id="panel-phone" class="hidden space-y-4">
                     <div id="phone-step-1">
-                        <input type="tel" id="phone-input" placeholder="Enter mobile with country code (e.g. +91...)" class="w-full border rounded px-4 py-2 mb-3 focus:outline-none focus:border-orange-500">
+                        <input type="tel" id="phone-input" placeholder="Enter mobile with country code (e.g. +91...)" class="w-full border rounded-xl px-4 py-2 mb-3 focus:outline-none focus:border-orange-500">
                         <div id="recaptcha-container" class="mb-3 flex justify-center"></div>
-                        <button onclick="sendOTP()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded transition">Send OTP</button>
+                        <button onclick="sendOTP()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl transition">Send OTP</button>
                     </div>
                     <div id="phone-step-2" class="hidden">
-                        <input type="text" id="otp-input" placeholder="Enter 6-digit OTP" class="w-full border rounded px-4 py-2 mb-4 focus:outline-none focus:border-orange-500">
-                        <button onclick="verifyOTP()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2 rounded transition">Verify OTP</button>
+                        <input type="text" id="otp-input" placeholder="Enter 6-digit OTP" class="w-full border rounded-xl px-4 py-2 mb-4 focus:outline-none focus:border-orange-500">
+                        <button onclick="verifyOTP()" class="w-full bg-green-500 hover:bg-green-600 text-white font-bold py-2.5 rounded-xl transition">Verify OTP</button>
                     </div>
                 </div>
                 
@@ -147,14 +148,48 @@
 
     <!-- Admin Password Modal -->
     <div id="admin-auth-modal" class="modal">
-        <div class="bg-white rounded-lg p-8 w-full max-w-sm mx-4 shadow-2xl">
+        <div class="bg-white rounded-2xl p-8 w-full max-w-sm mx-4 shadow-2xl animate-fade-in">
             <h2 class="text-xl font-bold mb-4 text-center text-gray-800">Admin Login</h2>
-            <input type="password" id="admin-password" placeholder="Enter Password" class="w-full border border-gray-300 rounded px-4 py-2 mb-4 focus:outline-none focus:border-gray-800">
-            <button onclick="verifyAdmin()" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-2 px-4 rounded transition">
+            <input type="password" id="admin-password" placeholder="Enter Password" class="w-full border border-gray-300 rounded-xl px-4 py-2 mb-4 focus:outline-none focus:border-gray-800">
+            <button onclick="verifyAdmin()" class="w-full bg-gray-900 hover:bg-black text-white font-bold py-2.5 px-4 rounded-xl transition">
                 Login to Dashboard
             </button>
             <p id="admin-error" class="text-red-500 text-sm mt-2 text-center hidden">Incorrect password!</p>
         </div>
+    </div>
+
+    <!-- Custom Confirm Modal (Zero Browser Alerts) -->
+    <div id="confirm-modal" class="modal">
+        <div class="bg-white rounded-2xl p-6 w-full max-w-sm mx-4 shadow-2xl animate-fade-in text-center">
+            <div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100 mb-4">
+                <i data-lucide="trash-2" class="h-6 w-6 text-red-600"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900 mb-2">Delete Item</h3>
+            <p class="text-sm text-gray-500 mb-6" id="confirm-modal-text">Are you sure you want to perform this action? This cannot be undone.</p>
+            <div class="flex gap-3 justify-center">
+                <button id="confirm-cancel-btn" class="px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-800 text-sm font-medium rounded-xl transition">Cancel</button>
+                <button id="confirm-ok-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white text-sm font-medium rounded-xl transition">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Sidebar Menu -->
+    <div id="mobile-sidebar" class="fixed inset-y-0 left-0 w-64 bg-[#0f1111] text-white z-50 transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden">
+        <div class="p-6 border-b border-gray-800 flex justify-between items-center">
+            <span class="text-xl font-bold text-orange-500">Vible Store</span>
+            <button onclick="toggleSidebar(false)" class="text-gray-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
+        </div>
+        <nav class="p-4 space-y-2">
+            <button onclick="window.setCategory('All'); toggleSidebar(false);" class="w-full text-left py-2.5 px-4 rounded hover:bg-gray-800 transition">Home</button>
+            <button onclick="window.setCategory('Electronics'); toggleSidebar(false);" class="w-full text-left py-2.5 px-4 rounded hover:bg-gray-800 transition">Electronics</button>
+            <button onclick="window.setCategory('Fashion'); toggleSidebar(false);" class="w-full text-left py-2.5 px-4 rounded hover:bg-gray-800 transition">Fashion</button>
+            <button onclick="window.setCategory('Home & Kitchen'); toggleSidebar(false);" class="w-full text-left py-2.5 px-4 rounded hover:bg-gray-800 transition">Home & Kitchen</button>
+            <button onclick="window.setCategory('Beauty'); toggleSidebar(false);" class="w-full text-left py-2.5 px-4 rounded hover:bg-gray-800 transition">Beauty</button>
+            <button onclick="window.setCategory('Sports'); toggleSidebar(false);" class="w-full text-left py-2.5 px-4 rounded hover:bg-gray-800 transition">Sports</button>
+            <button onclick="window.setCategory('Books'); toggleSidebar(false);" class="w-full text-left py-2.5 px-4 rounded hover:bg-gray-800 transition">Books</button>
+            <div class="border-t border-gray-800 my-4 pt-4"></div>
+            <button onclick="logoutStoreUser()" class="w-full text-left py-2.5 px-4 rounded hover:bg-red-900/40 text-red-400 transition"><i data-lucide="log-out" class="w-4 h-4 inline mr-2"></i>Logout</button>
+        </nav>
     </div>
 
     <!-- Firebase Scripts -->
@@ -163,7 +198,7 @@
         import { getAuth, onAuthStateChanged, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-        // Firebase configuration
+        // Web app's Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyArnkUgFSgOG0xVxwxQE9CX2S0-PUdpdOQ",
             authDomain: "vible-store.firebaseapp.com",
@@ -279,13 +314,13 @@
             const container = document.getElementById('toast-container') || (() => {
                 const c = document.createElement('div');
                 c.id = 'toast-container';
-                c.className = 'fixed bottom-4 right-4 z-50 flex flex-col gap-2';
+                c.className = 'fixed bottom-20 md:bottom-4 right-4 z-50 flex flex-col gap-2';
                 document.body.appendChild(c);
                 return c;
             })();
 
             const toast = document.createElement('div');
-            toast.className = `flex items-center gap-2 px-4 py-3 rounded-lg shadow-lg text-white font-medium transition duration-300 transform translate-y-10 opacity-0 ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}`;
+            toast.className = `flex items-center gap-2 px-4 py-3 rounded-xl shadow-lg text-white font-medium transition duration-300 transform translate-y-10 opacity-0 ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}`;
             toast.innerHTML = `<i data-lucide="${type === 'success' ? 'check-circle' : 'alert-circle'}" class="w-5 h-5 shrink-0"></i><span class="text-sm">${message}</span>`;
             container.appendChild(toast);
             lucide.createIcons();
@@ -298,6 +333,27 @@
                 toast.classList.add('translate-y-10', 'opacity-0');
                 setTimeout(() => toast.remove(), 300);
             }, 3500);
+        };
+
+        // Custom Confirm Dialog Trigger
+        window.showConfirm = function(text, onOk) {
+            const modal = document.getElementById('confirm-modal');
+            const okBtn = document.getElementById('confirm-ok-btn');
+            const cancelBtn = document.getElementById('confirm-cancel-btn');
+            document.getElementById('confirm-modal-text').textContent = text;
+            modal.classList.add('active');
+            
+            const cleanUp = () => {
+                modal.classList.remove('active');
+                okBtn.replaceWith(okBtn.cloneNode(true));
+                cancelBtn.replaceWith(cancelBtn.cloneNode(true));
+            };
+
+            document.getElementById('confirm-ok-btn').addEventListener('click', () => {
+                onOk();
+                cleanUp();
+            });
+            document.getElementById('confirm-cancel-btn').addEventListener('click', cleanUp);
         };
 
         // Global functions for UI bindings & Auth
@@ -398,6 +454,15 @@
             if(menu) menu.classList.toggle('hidden');
         };
 
+        window.toggleSidebar = function(show) {
+            const sidebar = document.getElementById('mobile-sidebar');
+            if (show) {
+                sidebar.classList.remove('-translate-x-full');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+            }
+        };
+
         window.verifyAdmin = function() {
             const pass = document.getElementById('admin-password').value;
             if (pass === '2010') {
@@ -462,32 +527,40 @@
             const defaultLogo = `<div class="flex items-center text-2xl font-bold text-white"><span class="text-orange-500">V</span>S <span class="ml-1 font-semibold">VIBLE <span class="text-orange-500 text-sm align-top">STORE</span></span></div>`;
             const logoHTML = storeLogo ? `<img src="${storeLogo}" alt="Logo" class="h-10">` : defaultLogo;
 
-            const categoryIcons = {
-                "Electronics": "headphones", "Fashion": "shirt", "Home & Kitchen": "coffee", 
-                "Beauty": "sparkles", "Sports": "dribbble", "Books": "book-open", 
-                "Automotive": "car", "Toys & Games": "gamepad-2"
+            // Photography Category Fallbacks exactly matching ChatGPT Image Jul 13, 2026, 12_53_45 PM.png
+            const categoryImagesFallback = {
+                "Electronics": "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=200&q=80",
+                "Fashion": "https://images.unsplash.com/photo-1479064555552-3ef4979f8908?w=200&q=80",
+                "Home & Kitchen": "https://images.unsplash.com/photo-1556911220-e15b29be8c8f?w=200&q=80",
+                "Beauty": "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=200&q=80",
+                "Sports": "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?w=200&q=80",
+                "Books": "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=200&q=80",
+                "Automotive": "https://images.unsplash.com/photo-1486006920555-c77dce18193b?w=200&q=80",
+                "Toys & Games": "https://images.unsplash.com/photo-1531062991700-2f3cd41923ff?w=200&q=80"
             };
 
             return `
                 <!-- Header -->
                 <header class="bg-[#0f1111] text-white sticky top-0 z-40 shadow-sm">
-                    <div class="container mx-auto px-4 py-3 flex flex-wrap lg:flex-nowrap items-center gap-4">
+                    <div class="container mx-auto px-4 py-3 flex items-center justify-between gap-4">
+                        <!-- Left: Hamburger for mobile -->
+                        <button onclick="toggleSidebar(true)" class="md:hidden text-white focus:outline-none">
+                            <i data-lucide="menu" class="w-6 h-6"></i>
+                        </button>
+
                         <a href="#" class="cursor-pointer flex-shrink-0" onclick="window.setCategory('All')">${logoHTML}</a>
                         
-                        <!-- Search Bar -->
-                        <div class="flex-grow flex items-center bg-white rounded overflow-hidden">
-                            <select class="bg-gray-100 text-gray-800 px-3 py-2 border-r outline-none hidden md:block">
-                                <option>All Categories</option>
-                            </select>
-                            <input type="text" id="store-search" placeholder="Search for products..." value="${searchQuery}"
+                        <!-- Search Bar (Desktop) -->
+                        <div class="hidden md:flex flex-grow max-w-2xl items-center bg-white rounded overflow-hidden">
+                            <input type="text" id="store-search-desktop" placeholder="Search for products..." value="${searchQuery}"
                                    class="w-full px-4 py-2 text-gray-800 outline-none">
-                            <button onclick="handleSearch()" class="bg-orange-400 hover:bg-orange-500 px-5 py-2 text-gray-900 transition">
+                            <button onclick="handleSearch('desktop')" class="bg-orange-400 hover:bg-orange-500 px-5 py-2 text-gray-900 transition">
                                 <i data-lucide="search" class="w-5 h-5"></i>
                             </button>
                         </div>
                         
                         <!-- Actions -->
-                        <div class="flex items-center gap-6 ml-auto flex-shrink-0">
+                        <div class="flex items-center gap-4 flex-shrink-0">
                             <!-- Account Menu -->
                             <div class="hidden md:flex flex-col cursor-pointer relative group" onclick="toggleAccountMenu()">
                                 <span class="text-xs text-gray-300">Hello, ${userName}</span>
@@ -503,16 +576,26 @@
                                 </div>
                             </div>
                             
-                            <!-- Wishlist -->
-                            <div class="flex items-center gap-1 cursor-pointer" onclick="window.showToast('Item added to Wishlist!', 'success')">
-                                <i data-lucide="heart" class="w-5 h-5 hover:text-orange-400 transition"></i>
-                                <span class="hidden md:block font-bold text-sm mt-1 hover:text-orange-400 transition">Wishlist</span>
+                            <!-- Wishlist icon matching mobile mockup -->
+                            <div class="flex items-center cursor-pointer" onclick="window.showToast('Item added to Wishlist!', 'success')">
+                                <i data-lucide="heart" class="w-6 h-6 hover:text-orange-400 transition"></i>
                             </div>
                         </div>
                     </div>
+
+                    <!-- Mobile Search Bar (Directly below header as shown in screenshot) -->
+                    <div class="md:hidden px-4 pb-3 pt-1">
+                        <div class="flex items-center bg-white rounded overflow-hidden">
+                            <input type="text" id="store-search-mobile" placeholder="Search for products..." value="${searchQuery}"
+                                   class="w-full px-4 py-2 text-gray-800 outline-none text-sm h-10">
+                            <button onclick="handleSearch('mobile')" class="bg-orange-400 hover:bg-orange-500 px-4 h-10 text-gray-900 transition">
+                                <i data-lucide="search" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    </div>
                     
-                    <!-- Sub Nav -->
-                    <div class="bg-[#232f3e] py-2 px-4 overflow-x-auto no-scrollbar">
+                    <!-- Sub Nav (Desktop Only) -->
+                    <div class="hidden md:block bg-[#232f3e] py-2 px-4 overflow-x-auto no-scrollbar">
                         <div class="container mx-auto flex items-center gap-6 text-sm font-medium whitespace-nowrap">
                             <button onclick="window.setCategory('All')" class="${activeCategory === 'All' ? 'text-orange-400 border-b-2 border-orange-400' : 'text-gray-300 hover:text-white'} pb-1 transition">Home</button>
                             ${categories.map(cat => `
@@ -523,70 +606,83 @@
                 </header>
 
                 <!-- Main Content -->
-                <main class="pb-16 bg-gray-50 min-h-screen">
+                <main class="bg-gray-50 min-h-screen">
                     ${activeCategory === 'All' && !searchQuery ? `
+                        
                         <!-- Hero Banner Slider -->
-                        <div class="relative w-full h-[300px] md:h-[400px] lg:h-[500px] bg-gray-900 overflow-hidden mb-8" id="banner-container">
-                            ${banners.length > 0 ? banners.map((banner, index) => `
-                                <div class="banner-slide ${index === 0 ? 'active' : ''}">
-                                    <img src="${banner.image}" class="w-full h-full object-cover opacity-80" alt="Banner">
-                                </div>
-                            `).join('') : `
-                                <div class="absolute inset-0 flex flex-col items-center justify-center bg-gradient-to-r from-gray-800 to-gray-900">
-                                    <h1 class="text-4xl md:text-6xl font-bold text-white mb-4">Shop More, <span class="text-orange-400">Earn More.</span></h1>
-                                    <p class="text-gray-300 text-lg">Find the best products, top deals and exclusive offers.</p>
-                                </div>
-                            `}
+                        <div class="container mx-auto px-0 md:px-4 md:mt-6">
+                            <div class="relative w-full h-[220px] md:h-[400px] lg:h-[500px] bg-gray-900 overflow-hidden md:rounded-2xl" id="banner-container">
+                                ${banners.length > 0 ? banners.map((banner, index) => `
+                                    <div class="banner-slide ${index === 0 ? 'active' : ''}">
+                                        <img src="${banner.image}" class="w-full h-full object-cover" alt="Banner">
+                                    </div>
+                                `).join('') : `
+                                    <div class="banner-slide active">
+                                        <!-- Your Specified Default Banner URL with perfect layout rendering -->
+                                        <img src="https://github.com/Tecox-studio/Vible-store/blob/main/ChatGPT%20Image%20Jul%2012,%202026,%2009_11_25%20PM.png?raw=true" class="w-full h-full object-cover" alt="Banner Default">
+                                    </div>
+                                `}
+                            </div>
                         </div>
 
-                        <!-- Category Circles -->
-                        <div class="container mx-auto px-4 mb-8">
-                            <div class="flex overflow-x-auto no-scrollbar gap-4 pb-4">
+                        <!-- Category Tiles Layout (Matching Screen 2 of ChatGPT Image Jul 13, 2026, 12_53_45 PM.png) -->
+                        <div class="container mx-auto px-4 mt-8">
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="text-lg font-bold text-gray-800">Shop by Category</h3>
+                            </div>
+                            <div class="grid grid-cols-3 gap-3 md:grid-cols-6 lg:grid-cols-8">
                                 ${categories.map(cat => `
-                                    <div onclick="window.setCategory('${cat}')" class="flex flex-col items-center justify-center min-w-[100px] h-[100px] bg-white rounded-lg shadow-sm cursor-pointer hover:shadow-md transition group border border-gray-100 p-2">
-                                        ${categoryImages[cat] 
-                                            ? `<img src="${categoryImages[cat]}" alt="${cat}" class="w-10 h-10 object-contain mb-2 group-hover:scale-110 transition">` 
-                                            : `<i data-lucide="${categoryIcons[cat] || 'box'}" class="w-8 h-8 text-gray-400 group-hover:text-orange-500 mb-2 transition"></i>`
-                                        }
-                                        <span class="text-xs font-medium text-gray-700 text-center">${cat}</span>
+                                    <div onclick="window.setCategory('${cat}')" class="flex flex-col items-center cursor-pointer group">
+                                        <div class="w-full aspect-square rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm relative transition transform group-hover:scale-105">
+                                            <img src="${categoryImages[cat] || categoryImagesFallback[cat] || 'https://placehold.co/150x150/f3f4f6/374151?text=' + cat}" 
+                                                 alt="${cat}" 
+                                                 class="w-full h-full object-cover">
+                                        </div>
+                                        <span class="text-xs font-semibold text-gray-700 text-center mt-2 truncate w-full px-1">${cat}</span>
                                     </div>
                                 `).join('')}
                             </div>
                         </div>
                     ` : `
                         <div class="container mx-auto px-4 pt-6 pb-2">
-                            <h2 class="text-2xl font-bold text-gray-800 mb-4">
+                            <h2 class="text-xl font-bold text-gray-800 mb-2">
                                 ${searchQuery ? `Search Results for "${searchQuery}"` : `${activeCategory} Products`}
                             </h2>
                         </div>
                     `}
 
                     <!-- Products Grid -->
-                    <div class="container mx-auto px-4">
+                    <div class="container mx-auto px-4 mt-6 pb-12">
                         ${displayProducts.length === 0 ? `
-                            <div class="flex flex-col items-center justify-center py-20 bg-white rounded-lg border border-gray-200 animate-fade-in">
-                                <i data-lucide="package-search" class="w-16 h-16 text-gray-300 mb-4 animate-bounce"></i>
+                            <div class="flex flex-col items-center justify-center py-20 bg-white rounded-2xl border border-gray-200">
+                                <i data-lucide="package-search" class="w-16 h-16 text-gray-300 mb-4"></i>
                                 <h3 class="text-xl font-semibold text-gray-600">No products found</h3>
                                 <p class="text-gray-400 mt-2">Try selecting a different category or clear your search.</p>
-                                <button onclick="window.setCategory('All'); document.getElementById('store-search').value='';" class="mt-4 px-6 py-2 bg-orange-500 text-white font-medium rounded hover:bg-orange-600 transition">View All Products</button>
+                                <button onclick="window.setCategory('All');" class="mt-4 px-6 py-2 bg-orange-500 text-white font-medium rounded hover:bg-orange-600 transition">View All Products</button>
                             </div>
                         ` : `
-                            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
                                 ${displayProducts.map(product => `
-                                    <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition border border-gray-100 flex flex-col group relative">
-                                        <div class="relative pt-[100%] bg-gray-50 flex items-center justify-center overflow-hidden">
-                                            <img src="${product.image}" alt="${product.title}" class="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition duration-300 z-0">
-                                            <!-- Crucial Fix: Discount Badge is absolutely set with z-20 to sit firmly on top of the image -->
-                                            ${product.discount ? `<div class="absolute top-2 left-2 z-20 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm pointer-events-none">-${product.discount}%</div>` : ''}
+                                    <div class="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition border border-gray-100 flex flex-col group relative">
+                                        
+                                        <!-- FIXED Layered Absolute Badge (Guarantees z-20 overlay over absolute image) -->
+                                        ${product.discount ? `
+                                            <div class="absolute top-2 left-2 z-20 bg-red-500 text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded shadow-sm pointer-events-none">
+                                                -${product.discount}%
+                                            </div>
+                                        ` : ''}
+
+                                        <div class="relative pt-[100%] bg-gray-50 flex items-center justify-center overflow-hidden z-10">
+                                            <img src="${product.image}" alt="${product.title}" class="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition duration-300">
                                         </div>
-                                        <div class="p-4 flex flex-col flex-grow">
-                                            <h3 class="font-medium text-gray-800 mb-2 line-clamp-2" title="${product.title}">${product.title}</h3>
+                                        <div class="p-3 md:p-4 flex flex-col flex-grow">
+                                            <h3 class="font-medium text-sm md:text-base text-gray-800 mb-2 line-clamp-2" title="${product.title}">${product.title}</h3>
                                             <div class="mt-auto">
                                                 <div class="flex items-center gap-2 mb-3">
-                                                    <span class="text-xl font-bold text-gray-900">₹${product.price}</span>
-                                                    ${product.oldPrice ? `<span class="text-sm text-gray-400 line-through">₹${product.oldPrice}</span>` : ''}
+                                                    <span class="text-lg md:text-xl font-bold text-gray-900">₹${product.price}</span>
+                                                    ${product.oldPrice ? `<span class="text-xs md:text-sm text-gray-400 line-through">₹${product.oldPrice}</span>` : ''}
                                                 </div>
-                                                <a href="${product.link}" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-medium py-2 rounded transition shadow-sm">
+                                                <a href="${product.link}" target="_blank" rel="noopener noreferrer" class="block w-full text-center bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-bold py-2 rounded-xl transition shadow-sm text-xs md:text-sm">
                                                     View Item
                                                 </a>
                                             </div>
@@ -598,8 +694,28 @@
                     </div>
                 </main>
                 
+                <!-- Bottom Sticky Navigation Bar for Mobile (Matching ChatGPT Image Jul 13, 2026, 12_53_45 PM.png) -->
+                <div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 py-2 flex justify-around items-center md:hidden z-40 shadow-xl">
+                    <button onclick="window.setCategory('All')" class="flex flex-col items-center justify-center text-gray-500 focus:outline-none hover:text-orange-500 ${activeCategory === 'All' ? 'text-orange-500 font-bold' : ''}">
+                        <i data-lucide="home" class="w-5 h-5"></i>
+                        <span class="text-[10px] mt-0.5">Home</span>
+                    </button>
+                    <button onclick="window.scrollTo({top: document.body.scrollHeight/3, behavior: 'smooth'})" class="flex flex-col items-center justify-center text-gray-500 focus:outline-none hover:text-orange-500">
+                        <i data-lucide="grid" class="w-5 h-5"></i>
+                        <span class="text-[10px] mt-0.5">Categories</span>
+                    </button>
+                    <button onclick="window.setCategory('Fashion')" class="flex flex-col items-center justify-center text-gray-500 focus:outline-none hover:text-orange-500">
+                        <i data-lucide="percent" class="w-5 h-5"></i>
+                        <span class="text-[10px] mt-0.5">Deals</span>
+                    </button>
+                    <button onclick="window.location.hash = '#vible-admin'" class="flex flex-col items-center justify-center text-gray-500 focus:outline-none hover:text-orange-500">
+                        <i data-lucide="user" class="w-5 h-5"></i>
+                        <span class="text-[10px] mt-0.5">Account</span>
+                    </button>
+                </div>
+
                 <!-- Footer -->
-                <footer class="bg-[#232f3e] text-white py-8 border-t-4 border-[#0f1111]">
+                <footer class="bg-[#232f3e] text-white py-8 border-t-4 border-[#0f1111] hidden md:block">
                     <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
                         <div class="flex items-center gap-4">
                             <i data-lucide="shield-check" class="w-10 h-10 text-orange-400"></i>
@@ -640,10 +756,17 @@
                 }, 3000);
             }
 
-            const searchInput = document.getElementById('store-search');
-            if (searchInput) {
-                searchInput.addEventListener('keypress', function(e) {
-                    if (e.key === 'Enter') handleSearch();
+            const searchInputDesktop = document.getElementById('store-search-desktop');
+            if (searchInputDesktop) {
+                searchInputDesktop.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') handleSearch('desktop');
+                });
+            }
+
+            const searchInputMobile = document.getElementById('store-search-mobile');
+            if (searchInputMobile) {
+                searchInputMobile.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') handleSearch('mobile');
                 });
             }
         }
@@ -655,8 +778,8 @@
             window.scrollTo(0,0);
         };
 
-        window.handleSearch = function() {
-            const input = document.getElementById('store-search');
+        window.handleSearch = function(device) {
+            const input = document.getElementById(device === 'mobile' ? 'store-search-mobile' : 'store-search-desktop');
             searchQuery = input.value.trim();
             renderApp();
         };
@@ -689,7 +812,7 @@
                             <!-- Banners & Logo Section -->
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <!-- Logo Setup -->
-                                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                                     <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="image" class="w-5 h-5 text-blue-500"></i> Store Logo</h3>
                                     <div class="mb-4">
                                         ${storeLogo ? `<img src="${storeLogo}" class="h-12 bg-gray-900 p-2 rounded mb-2">` : '<p class="text-sm text-gray-500 mb-2">Default text logo is active</p>'}
@@ -697,7 +820,7 @@
                                     <div class="flex flex-col gap-2">
                                         <div class="flex items-center gap-2">
                                             <input type="file" id="logo-upload" accept="image/*" class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer w-full">
-                                            <button id="logo-save-btn" onclick="uploadLogo()" class="bg-blue-500 text-white px-4 py-2 rounded text-sm hover:bg-blue-600 transition whitespace-nowrap flex items-center gap-1">Save Logo</button>
+                                            <button id="logo-save-btn" onclick="uploadLogo()" class="bg-blue-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-blue-600 transition whitespace-nowrap flex items-center gap-1">Save Logo</button>
                                         </div>
                                         <p id="logo-msg" class="text-sm text-center font-medium"></p>
                                     </div>
@@ -705,14 +828,13 @@
                                 </div>
 
                                 <!-- Banners Setup -->
-                                <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                                     <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="layers" class="w-5 h-5 text-purple-500"></i> Banners (Max 5)</h3>
                                     <div class="flex gap-2 mb-4 overflow-x-auto py-2">
                                         ${banners.map((b) => `
                                             <div class="relative flex-shrink-0 w-24 h-16 rounded overflow-hidden group border border-gray-200">
                                                 <img src="${b.image}" class="w-full h-full object-cover">
                                                 <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition">
-                                                    <!-- Uses non-blocking custom modal triggers via standard confirm alternative -->
                                                     <button onclick="deleteBanner('${b.id}')" class="text-white hover:text-red-500"><i data-lucide="trash-2" class="w-5 h-5"></i></button>
                                                 </div>
                                             </div>
@@ -722,7 +844,7 @@
                                     <div class="flex flex-col gap-2">
                                         <div class="flex items-center gap-2">
                                             <input type="file" id="banner-upload" accept="image/*" ${banners.length >= 5 ? 'disabled' : ''} class="text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100 cursor-pointer disabled:opacity-50 w-full">
-                                            <button id="banner-save-btn" onclick="uploadBanner()" ${banners.length >= 5 ? 'disabled' : ''} class="bg-purple-500 text-white px-4 py-2 rounded text-sm hover:bg-purple-600 transition disabled:opacity-50 whitespace-nowrap flex items-center gap-1">Add Banner</button>
+                                            <button id="banner-save-btn" onclick="uploadBanner()" ${banners.length >= 5 ? 'disabled' : ''} class="bg-purple-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-purple-600 transition disabled:opacity-50 whitespace-nowrap flex items-center gap-1">Add Banner</button>
                                         </div>
                                         <p id="banner-msg" class="text-sm text-center font-medium"></p>
                                     </div>
@@ -731,20 +853,20 @@
                             </div>
 
                             <!-- Category Icons Setup -->
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="layout-grid" class="w-5 h-5 text-indigo-500"></i> Manage Category Icons</h3>
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Select Category</label>
-                                        <select id="cat-select" class="w-full border rounded px-3 py-2 outline-none focus:border-indigo-500">
+                                        <select id="cat-select" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-indigo-500 bg-white">
                                             ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
                                         </select>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Upload Icon/Image</label>
                                         <div class="flex items-center gap-2">
-                                            <input type="file" id="cat-image-upload" accept="image/*" class="w-full border rounded p-1 outline-none text-sm text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 hover:file:bg-indigo-100 cursor-pointer">
-                                            <button id="cat-save-btn" onclick="uploadCategoryIcon()" class="bg-indigo-500 text-white px-4 py-2 rounded text-sm hover:bg-indigo-600 transition whitespace-nowrap">Upload</button>
+                                            <input type="file" id="cat-image-upload" accept="image/*" class="w-full border rounded-xl p-1.5 outline-none text-sm text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 hover:file:bg-indigo-100 cursor-pointer">
+                                            <button id="cat-save-btn" onclick="uploadCategoryIcon()" class="bg-indigo-500 text-white px-4 py-2 rounded-xl text-sm hover:bg-indigo-600 transition whitespace-nowrap">Upload</button>
                                         </div>
                                         <p id="cat-msg" class="text-sm mt-2 font-medium"></p>
                                     </div>
@@ -752,10 +874,10 @@
                                 
                                 <div class="flex gap-4 overflow-x-auto py-2 mt-4 border-t border-gray-100 pt-4">
                                     ${categories.map(c => categoryImages[c] ? `
-                                        <div class="relative flex-shrink-0 w-20 h-20 bg-gray-50 rounded border border-gray-200 flex items-center justify-center group">
+                                        <div class="relative flex-shrink-0 w-20 h-20 bg-gray-50 rounded-2xl border border-gray-200 flex items-center justify-center group">
                                             <img src="${categoryImages[c]}" class="w-12 h-12 object-contain">
-                                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded">
-                                                <button onclick="removeCategoryIcon('${c}')" class="text-white hover:text-red-500 bg-black bg-opacity-50 p-1 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded-2xl">
+                                                <button onclick="removeCategoryIcon('${c}')" class="text-white hover:text-red-500 bg-black bg-opacity-50 p-1.5 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
                                             </div>
                                             <span class="absolute bottom-1 bg-white bg-opacity-90 px-1 rounded text-[10px] text-gray-700 font-bold truncate max-w-full text-center">${c}</span>
                                         </div>
@@ -764,46 +886,46 @@
                             </div>
 
                             <!-- Add Product Section -->
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="plus-circle" class="w-5 h-5 text-green-500"></i> Add New Product</h3>
                                 
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Product Title</label>
-                                        <input type="text" id="p-title" class="w-full border rounded px-3 py-2 outline-none focus:border-orange-500">
+                                        <input type="text" id="p-title" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-orange-500">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
-                                        <select id="p-category" class="w-full border rounded px-3 py-2 outline-none focus:border-orange-500">
+                                        <select id="p-category" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-orange-500 bg-white">
                                             ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
                                         </select>
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Price (₹)</label>
-                                        <input type="number" id="p-price" class="w-full border rounded px-3 py-2 outline-none focus:border-orange-500">
+                                        <input type="number" id="p-price" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-orange-500">
                                     </div>
                                     <div>
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Old Price (₹) [Optional]</label>
-                                        <input type="number" id="p-old-price" class="w-full border rounded px-3 py-2 outline-none focus:border-orange-500">
+                                        <input type="number" id="p-old-price" class="w-full border rounded-xl px-3 py-2 outline-none focus:border-orange-500">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Item Purchase Link</label>
-                                        <input type="url" id="p-link" placeholder="https://..." class="w-full border rounded px-3 py-2 outline-none focus:border-orange-500">
+                                        <input type="url" id="p-link" placeholder="https://..." class="w-full border rounded-xl px-3 py-2 outline-none focus:border-orange-500">
                                     </div>
                                     <div class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
-                                        <input type="file" id="p-image" accept="image/*" class="w-full border rounded p-1 outline-none text-sm text-gray-500 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-50 hover:file:bg-gray-100 cursor-pointer">
+                                        <input type="file" id="p-image" accept="image/*" class="w-full border rounded-xl p-1.5 outline-none text-sm text-gray-500 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-50 hover:file:bg-gray-100 cursor-pointer">
                                         <p class="text-xs text-gray-400 mt-1">Original high-quality image will be securely uploaded.</p>
                                     </div>
                                 </div>
-                                <button id="add-product-btn" onclick="handleAddProduct()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded transition flex justify-center items-center gap-2">
+                                <button id="add-product-btn" onclick="handleAddProduct()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2.5 rounded-xl transition flex justify-center items-center gap-2 shadow-sm">
                                     <i data-lucide="upload" class="w-4 h-4"></i> Save Product
                                 </button>
                                 <p id="add-p-msg" class="text-sm mt-2 text-center"></p>
                             </div>
 
                             <!-- Manage Products -->
-                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                            <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
                                 <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="list" class="w-5 h-5 text-gray-600"></i> Manage Products (${products.length})</h3>
                                 <div class="overflow-x-auto">
                                     <table class="w-full text-left border-collapse">
@@ -845,7 +967,6 @@
         }
 
         /* ================= UTILS & FIREBASE ACTIONS ================= */
-        
         // Premium Base64 Image Compression (Supports PNG Transparency)
         function compressImage(file, maxDimension, quality, callback) {
             const reader = new FileReader();
@@ -954,14 +1075,16 @@
             }
         };
 
-        window.deleteBanner = async function(id) {
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id));
-                window.showToast("Banner deleted successfully.", "success");
-            } catch (error) {
-                console.error("Error deleting banner:", error);
-                window.showToast("Error deleting banner.", "error");
-            }
+        window.deleteBanner = function(id) {
+            window.showConfirm("Are you sure you want to delete this banner?", async () => {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'banners', id));
+                    window.showToast("Banner deleted successfully.", "success");
+                } catch (error) {
+                    console.error("Error deleting banner:", error);
+                    window.showToast("Error deleting banner.", "error");
+                }
+            });
         };
 
         window.uploadCategoryIcon = function() {
@@ -993,13 +1116,15 @@
             }
         };
 
-        window.removeCategoryIcon = async function(category) {
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', category));
-                window.showToast(`${category} custom icon removed.`, "success");
-            } catch (error) {
-                console.error("Error removing category icon:", error);
-            }
+        window.removeCategoryIcon = function(category) {
+            window.showConfirm(`Are you sure you want to remove the custom icon for ${category}?`, async () => {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'categories', category));
+                    window.showToast(`${category} custom icon removed.`, "success");
+                } catch (error) {
+                    console.error("Error removing category icon:", error);
+                }
+            });
         };
 
         window.handleAddProduct = function() {
@@ -1054,14 +1179,16 @@
             });
         };
 
-        window.deleteProduct = async function(id) {
-            try {
-                await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id));
-                window.showToast("Product deleted successfully.", "success");
-            } catch (error) {
-                console.error("Error deleting product:", error);
-                window.showToast("Error deleting product.", "error");
-            }
+        window.deleteProduct = function(id) {
+            window.showConfirm("Are you sure you want to delete this product?", async () => {
+                try {
+                    await deleteDoc(doc(db, 'artifacts', appId, 'public', 'data', 'products', id));
+                    window.showToast("Product deleted successfully.", "success");
+                } catch (error) {
+                    console.error("Error deleting product:", error);
+                    window.showToast("Error deleting product.", "error");
+                }
+            });
         };
 
         // Initialize Call
