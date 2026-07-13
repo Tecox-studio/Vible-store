@@ -180,6 +180,7 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { getAuth, onAuthStateChanged, signInWithCustomToken, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, RecaptchaVerifier, signInWithPhoneNumber, signOut } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
         import { getFirestore, collection, onSnapshot, doc, setDoc, addDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-storage.js";
 
         // Your web app's Firebase configuration
         const firebaseConfig = {
@@ -197,12 +198,14 @@
         const app = initializeApp(firebaseConfig);
         const auth = getAuth(app);
         const db = getFirestore(app);
+        const storage = getStorage(app);
 
         // State Management
         let currentUser = null;
         let products = [];
         let banners = [];
         let storeLogo = '';
+        let categoryImages = {};
         let activeCategory = 'All';
         let searchQuery = '';
         let bannerInterval = null;
@@ -257,13 +260,14 @@
                 renderApp();
             }, (error) => { console.error("Error fetching products:", error); });
 
-            // Load Settings (Logo, Banners)
+            // Load Settings (Logo, Banners, Category Images)
             const settingsRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'main');
             onSnapshot(settingsRef, (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
                     storeLogo = data.logo || '';
                     banners = data.banners || [];
+                    categoryImages = data.categoryImages || {};
                 }
                 renderApp();
             }, (error) => { console.error("Error fetching settings:", error); });
@@ -510,8 +514,11 @@
                         <div class="container mx-auto px-4 mb-8">
                             <div class="flex overflow-x-auto no-scrollbar gap-4 pb-4">
                                 ${categories.map(cat => `
-                                    <div onclick="window.setCategory('${cat}')" class="flex flex-col items-center justify-center min-w-[100px] h-[100px] bg-white rounded-lg shadow-sm cursor-pointer hover:shadow-md transition group border border-gray-100">
-                                        <i data-lucide="${categoryIcons[cat] || 'box'}" class="w-8 h-8 text-gray-400 group-hover:text-orange-500 mb-2 transition"></i>
+                                    <div onclick="window.setCategory('${cat}')" class="flex flex-col items-center justify-center min-w-[100px] h-[100px] bg-white rounded-lg shadow-sm cursor-pointer hover:shadow-md transition group border border-gray-100 p-2">
+                                        ${categoryImages[cat] 
+                                            ? `<img src="${categoryImages[cat]}" alt="${cat}" class="w-10 h-10 object-contain mb-2 group-hover:scale-110 transition">` 
+                                            : `<i data-lucide="${categoryIcons[cat] || 'box'}" class="w-8 h-8 text-gray-400 group-hover:text-orange-500 mb-2 transition"></i>`
+                                        }
                                         <span class="text-xs font-medium text-gray-700 text-center">${cat}</span>
                                     </div>
                                 `).join('')}
@@ -538,9 +545,9 @@
                             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                                 ${displayProducts.map(product => `
                                     <div class="bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition border border-gray-100 flex flex-col group">
-                                        <div class="relative pt-[100%] bg-gray-50 flex items-center justify-center">
-                                            ${product.discount ? `<div class="absolute top-2 left-2 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm">-${product.discount}%</div>` : ''}
-                                            <img src="${product.image}" alt="${product.title}" class="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition duration-300">
+                                        <div class="relative pt-[100%] bg-gray-50 flex items-center justify-center overflow-hidden">
+                                            <img src="${product.image}" alt="${product.title}" class="absolute inset-0 w-full h-full object-contain p-4 group-hover:scale-105 transition duration-300 z-0">
+                                            ${product.discount ? `<div class="absolute top-2 left-2 z-20 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded shadow-sm pointer-events-none">-${product.discount}%</div>` : ''}
                                         </div>
                                         <div class="p-4 flex flex-col flex-grow">
                                             <h3 class="font-medium text-gray-800 mb-2 line-clamp-2" title="${product.title}">${product.title}</h3>
@@ -690,7 +697,40 @@
                                         </div>
                                         <p id="banner-msg" class="text-sm text-center font-medium"></p>
                                     </div>
-                                    <p class="text-xs text-gray-400 mt-2">Landscape images work best (e.g. 1920x500px). Auto-compressed over 1MB.</p>
+                                    <p class="text-xs text-gray-400 mt-2">Landscape images work best (e.g. 1920x500px). Original quality preserved.</p>
+                                </div>
+                            </div>
+
+                            <!-- Category Icons Setup -->
+                            <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                                <h3 class="text-lg font-bold text-gray-800 mb-4 flex items-center gap-2"><i data-lucide="layout-grid" class="w-5 h-5 text-indigo-500"></i> Manage Category Icons</h3>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Select Category</label>
+                                        <select id="cat-select" class="w-full border rounded px-3 py-2 outline-none focus:border-indigo-500">
+                                            ${categories.map(c => `<option value="${c}">${c}</option>`).join('')}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Upload Icon/Image</label>
+                                        <div class="flex items-center gap-2">
+                                            <input type="file" id="cat-image-upload" accept="image/*" class="w-full border rounded p-1 outline-none text-sm text-gray-500 file:mr-2 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-indigo-50 hover:file:bg-indigo-100 cursor-pointer">
+                                            <button id="cat-save-btn" onclick="uploadCategoryIcon()" class="bg-indigo-500 text-white px-4 py-2 rounded text-sm hover:bg-indigo-600 transition whitespace-nowrap">Upload</button>
+                                        </div>
+                                        <p id="cat-msg" class="text-sm mt-2 font-medium"></p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex gap-4 overflow-x-auto py-2 mt-4 border-t border-gray-100 pt-4">
+                                    ${categories.map(c => categoryImages[c] ? `
+                                        <div class="relative flex-shrink-0 w-20 h-20 bg-gray-50 rounded border border-gray-200 flex items-center justify-center group">
+                                            <img src="${categoryImages[c]}" class="w-12 h-12 object-contain">
+                                            <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition rounded">
+                                                <button onclick="removeCategoryIcon('${c}')" class="text-white hover:text-red-500 bg-black bg-opacity-50 p-1 rounded-full"><i data-lucide="trash-2" class="w-4 h-4"></i></button>
+                                            </div>
+                                            <span class="absolute bottom-1 bg-white bg-opacity-90 px-1 rounded text-[10px] text-gray-700 font-bold truncate max-w-full text-center">${c}</span>
+                                        </div>
+                                    ` : '').join('')}
                                 </div>
                             </div>
 
@@ -724,7 +764,7 @@
                                     <div class="md:col-span-2">
                                         <label class="block text-sm font-medium text-gray-700 mb-1">Product Image</label>
                                         <input type="file" id="p-image" accept="image/*" class="w-full border rounded p-1 outline-none text-sm text-gray-500 file:mr-4 file:py-1 file:px-3 file:rounded file:border-0 file:text-sm file:font-semibold file:bg-gray-50 hover:file:bg-gray-100 cursor-pointer">
-                                        <p class="text-xs text-gray-400 mt-1">Image will be automatically compressed to save space while maintaining quality.</p>
+                                        <p class="text-xs text-gray-400 mt-1">Original high-quality image will be securely uploaded.</p>
                                     </div>
                                 </div>
                                 <button id="add-product-btn" onclick="handleAddProduct()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-2 rounded transition flex justify-center items-center gap-2">
@@ -777,43 +817,23 @@
 
         /* ================= UTILS & FIREBASE ACTIONS ================= */
         
-        // Image Compression function
-        function compressImage(file, callback, maxWidth = 800, maxHeight = 800, quality = 0.7) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const img = new Image();
-                img.onload = function() {
-                    const canvas = document.createElement('canvas');
-                    let width = img.width;
-                    let height = img.height;
-
-                    if (width > height) {
-                        if (width > maxWidth) { height *= maxWidth / width; width = maxWidth; }
-                    } else {
-                        if (height > maxHeight) { width *= maxHeight / height; height = maxHeight; }
-                    }
-                    
-                    canvas.width = width;
-                    canvas.height = height;
-                    const ctx = canvas.getContext('2d');
-                    ctx.drawImage(img, 0, 0, width, height);
-                    
-                    const dataUrl = canvas.toDataURL('image/jpeg', quality);
-                    callback(dataUrl);
-                };
-                img.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
+        // Upload file directly to Firebase Storage (No compression, keeps 100% original quality)
+        async function uploadFileToStorage(file, folderPath) {
+            const fileName = `${folderPath}/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+            const storageRef = ref(storage, fileName);
+            await uploadBytes(storageRef, file);
+            return await getDownloadURL(storageRef);
         }
 
         // Save Settings to Firebase
-        async function saveSettings(newLogo, newBanners) {
+        async function saveSettings(newLogo, newBanners, newCategoryImages) {
             if(!currentUser) return false;
             try {
                 const docRef = doc(db, 'artifacts', appId, 'public', 'data', 'settings', 'main');
                 await setDoc(docRef, {
                     logo: newLogo !== undefined ? newLogo : storeLogo,
-                    banners: newBanners !== undefined ? newBanners : banners
+                    banners: newBanners !== undefined ? newBanners : banners,
+                    categoryImages: newCategoryImages !== undefined ? newCategoryImages : categoryImages
                 }, { merge: true });
                 return true;
             } catch (e) {
@@ -822,7 +842,7 @@
             }
         }
 
-        window.uploadLogo = function() {
+        window.uploadLogo = async function() {
             const fileInput = document.getElementById('logo-upload');
             const btn = document.getElementById('logo-save-btn');
             const msg = document.getElementById('logo-msg');
@@ -832,25 +852,27 @@
                 btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...';
                 lucide.createIcons();
 
-                const file = fileInput.files[0];
-                compressImage(file, async (base64) => {
-                    const success = await saveSettings(base64, undefined);
-                    btn.disabled = false;
-                    btn.innerHTML = 'Save Logo';
+                try {
+                    const file = fileInput.files[0];
+                    const logoUrl = await uploadFileToStorage(file, 'logos');
+                    const success = await saveSettings(logoUrl, undefined, undefined);
                     
                     if(success) {
                         msg.textContent = "Logo Saved Successfully!";
                         msg.className = "text-sm text-center font-medium mt-2 text-green-500";
-                    } else {
-                        msg.textContent = "Error saving logo.";
-                        msg.className = "text-sm text-center font-medium mt-2 text-red-500";
-                    }
+                    } else throw new Error("Save failed");
+                } catch (error) {
+                    msg.textContent = "Error: " + error.message;
+                    msg.className = "text-sm text-center font-medium mt-2 text-red-500";
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Save Logo';
                     setTimeout(() => msg.textContent = '', 4000);
-                }, 800, 800, 0.9); // Better logo quality
+                }
             }
         };
 
-        window.uploadBanner = function() {
+        window.uploadBanner = async function() {
             const fileInput = document.getElementById('banner-upload');
             const btn = document.getElementById('banner-save-btn');
             const msg = document.getElementById('banner-msg');
@@ -860,23 +882,24 @@
                 btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...';
                 lucide.createIcons();
 
-                const file = fileInput.files[0];
-                compressImage(file, async (base64) => {
-                    const newBanners = [...banners, base64];
-                    const success = await saveSettings(undefined, newBanners);
-                    
-                    btn.disabled = false;
-                    btn.innerHTML = 'Add Banner';
+                try {
+                    const file = fileInput.files[0];
+                    const bannerUrl = await uploadFileToStorage(file, 'banners');
+                    const newBanners = [...banners, bannerUrl];
+                    const success = await saveSettings(undefined, newBanners, undefined);
                     
                     if(success) {
                         msg.textContent = "Banner Added Successfully!";
                         msg.className = "text-sm text-center font-medium mt-2 text-green-500";
-                    } else {
-                        msg.textContent = "Error saving banner.";
-                        msg.className = "text-sm text-center font-medium mt-2 text-red-500";
-                    }
+                    } else throw new Error("Save failed");
+                } catch(error) {
+                    msg.textContent = "Error: " + error.message;
+                    msg.className = "text-sm text-center font-medium mt-2 text-red-500";
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Add Banner';
                     setTimeout(() => msg.textContent = '', 4000);
-                }, 1400, 800, 0.85); // High resolution and quality for banners
+                }
             }
         };
 
@@ -884,11 +907,50 @@
             if(confirm("Are you sure you want to delete this banner?")) {
                 const newBanners = [...banners];
                 newBanners.splice(index, 1);
-                await saveSettings(undefined, newBanners);
+                await saveSettings(undefined, newBanners, undefined);
             }
         };
 
-        window.handleAddProduct = function() {
+        window.uploadCategoryIcon = async function() {
+            const catSelect = document.getElementById('cat-select').value;
+            const fileInput = document.getElementById('cat-image-upload');
+            const btn = document.getElementById('cat-save-btn');
+            const msg = document.getElementById('cat-msg');
+
+            if (fileInput.files.length > 0) {
+                btn.disabled = true;
+                btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i>...';
+                lucide.createIcons();
+
+                try {
+                    const file = fileInput.files[0];
+                    const imgUrl = await uploadFileToStorage(file, 'categories');
+                    const newCategoryImages = { ...categoryImages, [catSelect]: imgUrl };
+                    await saveSettings(undefined, undefined, newCategoryImages);
+                    
+                    msg.textContent = "Saved!";
+                    msg.className = "text-sm font-medium mt-2 text-green-500";
+                } catch (error) {
+                    msg.textContent = "Error: " + error.message;
+                    msg.className = "text-sm font-medium mt-2 text-red-500";
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = 'Upload';
+                    fileInput.value = '';
+                    setTimeout(() => msg.textContent = '', 4000);
+                }
+            }
+        };
+
+        window.removeCategoryIcon = async function(category) {
+            if(confirm(`Remove custom icon for ${category}?`)) {
+                const newCategoryImages = { ...categoryImages };
+                delete newCategoryImages[category];
+                await saveSettings(undefined, undefined, newCategoryImages);
+            }
+        };
+
+        window.handleAddProduct = async function() {
             const title = document.getElementById('p-title').value.trim();
             const price = document.getElementById('p-price').value;
             const oldPrice = document.getElementById('p-old-price').value;
@@ -908,39 +970,40 @@
             btn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> Saving...';
             lucide.createIcons();
 
-            compressImage(fileInput.files[0], async (base64Image) => {
-                try {
-                    let discount = 0;
-                    if(oldPrice && Number(oldPrice) > Number(price)) {
-                        discount = Math.round(((Number(oldPrice) - Number(price)) / Number(oldPrice)) * 100);
-                    }
+            try {
+                const file = fileInput.files[0];
+                const imageUrl = await uploadFileToStorage(file, 'products');
 
-                    const productData = {
-                        title, category, price: Number(price), oldPrice: oldPrice ? Number(oldPrice) : null,
-                        link, image: base64Image, discount, createdAt: Date.now()
-                    };
-
-                    const productsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
-                    await addDoc(productsRef, productData);
-                    
-                    document.getElementById('p-title').value = '';
-                    document.getElementById('p-price').value = '';
-                    document.getElementById('p-old-price').value = '';
-                    document.getElementById('p-link').value = '';
-                    document.getElementById('p-image').value = '';
-                    
-                    msgEl.textContent = "Product added successfully!";
-                    msgEl.className = "text-sm mt-2 text-center text-green-500";
-                    setTimeout(() => msgEl.textContent = '', 3000);
-                } catch (error) {
-                    msgEl.textContent = "Error adding product.";
-                    msgEl.className = "text-sm mt-2 text-center text-red-500";
-                } finally {
-                    btn.disabled = false;
-                    btn.innerHTML = '<i data-lucide="upload" class="w-4 h-4"></i> Save Product';
-                    lucide.createIcons();
+                let discount = 0;
+                if(oldPrice && Number(oldPrice) > Number(price)) {
+                    discount = Math.round(((Number(oldPrice) - Number(price)) / Number(oldPrice)) * 100);
                 }
-            }, 800, 800, 0.8); // Slightly better product image quality
+
+                const productData = {
+                    title, category, price: Number(price), oldPrice: oldPrice ? Number(oldPrice) : null,
+                    link, image: imageUrl, discount, createdAt: Date.now()
+                };
+
+                const productsRef = collection(db, 'artifacts', appId, 'public', 'data', 'products');
+                await addDoc(productsRef, productData);
+                
+                document.getElementById('p-title').value = '';
+                document.getElementById('p-price').value = '';
+                document.getElementById('p-old-price').value = '';
+                document.getElementById('p-link').value = '';
+                document.getElementById('p-image').value = '';
+                
+                msgEl.textContent = "Product added successfully!";
+                msgEl.className = "text-sm mt-2 text-center text-green-500";
+            } catch (error) {
+                msgEl.textContent = "Error adding product: " + error.message;
+                msgEl.className = "text-sm mt-2 text-center text-red-500";
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i data-lucide="upload" class="w-4 h-4"></i> Save Product';
+                lucide.createIcons();
+                setTimeout(() => msgEl.textContent = '', 4000);
+            }
         };
 
         window.deleteProduct = async function(id) {
